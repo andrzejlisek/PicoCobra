@@ -1,0 +1,3 @@
+/media/xxx/WORK1/__ToBackup/Develop/Cobra/RaspberryPi/MCUME_pico/build/pioasm/CMakeFiles/rebuild_cache.dir
+/media/xxx/WORK1/__ToBackup/Develop/Cobra/RaspberryPi/MCUME_pico/build/pioasm/CMakeFiles/edit_cache.dir
+/media/xxx/WORK1/__ToBackup/Develop/Cobra/RaspberryPi/MCUME_pico/build/pioasm/CMakeFiles/pioasm.dir

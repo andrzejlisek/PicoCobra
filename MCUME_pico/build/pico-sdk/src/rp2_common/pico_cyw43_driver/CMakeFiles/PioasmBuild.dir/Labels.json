@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/media/xxx/WORK1/__ToBackup/Develop/Cobra/RaspberryPi/MCUME_pico/build/pico-sdk/src/rp2_common/pico_cyw43_driver/CMakeFiles/PioasmBuild"
+		},
+		{
+			"file" : "/media/xxx/WORK1/__ToBackup/Develop/Cobra/RaspberryPi/MCUME_pico/build/pico-sdk/src/rp2_common/pico_cyw43_driver/CMakeFiles/PioasmBuild.rule"
+		},
+		{
+			"file" : "/media/xxx/WORK1/__ToBackup/Develop/Cobra/RaspberryPi/MCUME_pico/build/pico-sdk/src/rp2_common/pico_cyw43_driver/CMakeFiles/PioasmBuild-complete.rule"
+		},
+		{
+			"file" : "/media/xxx/WORK1/__ToBackup/Develop/Cobra/RaspberryPi/MCUME_pico/build/pico-sdk/src/rp2_common/pico_cyw43_driver/pioasm/src/PioasmBuild-stamp/PioasmBuild-install.rule"
+		},
+		{
+			"file" : "/media/xxx/WORK1/__ToBackup/Develop/Cobra/RaspberryPi/MCUME_pico/build/pico-sdk/src/rp2_common/pico_cyw43_driver/pioasm/src/PioasmBuild-stamp/PioasmBuild-mkdir.rule"
+		},
+		{
+			"file" : "/media/xxx/WORK1/__ToBackup/Develop/Cobra/RaspberryPi/MCUME_pico/build/pico-sdk/src/rp2_common/pico_cyw43_driver/pioasm/src/PioasmBuild-stamp/PioasmBuild-download.rule"
+		},
+		{
+			"file" : "/media/xxx/WORK1/__ToBackup/Develop/Cobra/RaspberryPi/MCUME_pico/build/pico-sdk/src/rp2_common/pico_cyw43_driver/pioasm/src/PioasmBuild-stamp/PioasmBuild-update.rule"
+		},
+		{
+			"file" : "/media/xxx/WORK1/__ToBackup/Develop/Cobra/RaspberryPi/MCUME_pico/build/pico-sdk/src/rp2_common/pico_cyw43_driver/pioasm/src/PioasmBuild-stamp/PioasmBuild-patch.rule"
+		},
+		{
+			"file" : "/media/xxx/WORK1/__ToBackup/Develop/Cobra/RaspberryPi/MCUME_pico/build/pico-sdk/src/rp2_common/pico_cyw43_driver/pioasm/src/PioasmBuild-stamp/PioasmBuild-configure.rule"
+		},
+		{
+			"file" : "/media/xxx/WORK1/__ToBackup/Develop/Cobra/RaspberryPi/MCUME_pico/build/pico-sdk/src/rp2_common/pico_cyw43_driver/pioasm/src/PioasmBuild-stamp/PioasmBuild-build.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"PioasmBuild"
+		],
+		"name" : "PioasmBuild"
+	}
+}

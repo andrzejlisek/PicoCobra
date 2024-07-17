@@ -1,0 +1,5 @@
+/media/xxx/WORK1/__ToBackup/Develop/Cobra/RaspberryPi/MCUME_pico/build/elf2uf2/CMakeFiles/rebuild_cache.dir
+/media/xxx/WORK1/__ToBackup/Develop/Cobra/RaspberryPi/MCUME_pico/build/elf2uf2/CMakeFiles/edit_cache.dir
+/media/xxx/WORK1/__ToBackup/Develop/Cobra/RaspberryPi/MCUME_pico/build/elf2uf2/CMakeFiles/elf2uf2.dir
+/media/xxx/WORK1/__ToBackup/Develop/Cobra/RaspberryPi/MCUME_pico/build/elf2uf2/boot_uf2_headers/CMakeFiles/rebuild_cache.dir
+/media/xxx/WORK1/__ToBackup/Develop/Cobra/RaspberryPi/MCUME_pico/build/elf2uf2/boot_uf2_headers/CMakeFiles/edit_cache.dir
