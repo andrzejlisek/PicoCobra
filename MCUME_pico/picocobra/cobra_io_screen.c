@@ -15,6 +15,7 @@ unsigned char screen_buf[32 * 24 * 3];
 #define ZX_VID_FULLHEIGHT_	(2*ZX_VID_MARGIN_+192)
 
 #define screen_blit_offfset (screen_second ? (384 * 31) : 0)
+#define screen_blit_offfset_color (screen_second ? 768 : 0)
 
 char * CobraCHR;
 
@@ -50,14 +51,13 @@ void screen_color(int X, int Y, unsigned char Clr)
 void screen_clear()
 {
     memset(screen_raw,0xff,ZX_VID_FULLWIDTH_*ZX_VID_FULLHEIGHT_/8);
-    unsigned char ColoD = 0;
     for (int Y = 0; Y < 24; Y++)
     {
         for (int X = 0; X < 32; X++)
         {
             screen_char(X, Y, 33);
-            //screen_color(X, Y, ColoD);
-            ColoD++;
+            screen_color(X, Y, 15);
+            screen_color(X, Y + 24, 240);
         }
     }
 }
@@ -65,7 +65,7 @@ void screen_clear()
 void screen_text(int X, int Y, unsigned char * Txt)
 {
     int I = 0;
-    while (Txt[I] != 0)
+    while ((Txt[I] != 0) && (X < 32))
     {
         screen_char(X, Y, Txt[I]);
         X++;

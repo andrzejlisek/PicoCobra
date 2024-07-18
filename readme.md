@@ -24,7 +24,7 @@ Emulator wykorzystuje pliki z karty SD włożonej do czytnika znajdującym się 
 
 
 * **CpuMem\_ScreenMemCommon** \- Określa, czy pamięć w zakresie **F800\-FBFF** i **FC00\-FFFF** jest tą samą pamięcią \(jak w oryginalnym komputerze Cobra1\), czy dwoma osobnymi obszarami pamięci \(wymagane do wyświetlania kolorów\)\.
-* **Screen\_ScreenColor** \- Określa, czy używać kolorów \(kolor jeszcze nie zaimplementowany\)\.
+* **Screen\_ScreenColor** \- Określa, czy używać kolorów\.
 * **FileChr** \- Nazwa pliku ze wzorami znaków na ekranie\.
 * **FileLst** \- Nazwa pliku listy banków pamięci ROM\. Budowa pliku identyczna, jak do emulatora [Cobra1](https://github.com/andrzejlisek/Cobra1 "https://github.com/andrzejlisek/Cobra1")\.
 * **FileRom** \- Nazwa pliku pamięci ROM\.

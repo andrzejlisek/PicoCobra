@@ -107,12 +107,12 @@ int FileLoadConfigValueHex(char * Buf, int BufPos, int BufLen)
         }
         if ((Buf[BufPos + I] >= 'A') && (Buf[BufPos + I] <= 'F'))
         {
-            ValChr = Buf[BufPos + I] - 65;
+            ValChr = Buf[BufPos + I] - 55;
             Val = Val + ValChr;
         }
-        if ((Buf[BufPos + I] >= 'a') && (Buf[BufPos + I] >= 'f'))
+        if ((Buf[BufPos + I] >= 'a') && (Buf[BufPos + I] <= 'f'))
         {
-            ValChr = Buf[BufPos + I] - 97;
+            ValChr = Buf[BufPos + I] - 87;
             Val = Val + ValChr;
         }
     }
@@ -146,30 +146,50 @@ void MemorySetRom(int Page)
 
 void MemorySetFont(int Page)
 {
-    // Jezeli liczba jest co najmniej 128, to nalezy uzyc czcionki z pamieci RAM
-    //if (Page >= 128)
-    //{
-        //Page = 256;
-    //}
-    
-    if (FileConfigChrSize >= 2048)
+    if (Page >= 128)
     {
-        if (FileConfigChrSizeType > 0)
+        memory_font_ram = 1;
+        memcpy(CobraCHR, memory_raw + memory_font_ram_addr, 2048);
+    }
+    else
+    {
+        memory_font_ram = 0;
+        if (FileConfigChrSize >= 2048)
         {
-            int FontFileOffset = Page & FileConfigChrSizeType;
-            FontFileOffset = FontFileOffset * 2048;
-            FileLoadToMem(CobraCHR, FileConfigChrName, FontFileOffset, 2048);
-        }
-        else
-        {
-            FileLoadToMem(CobraCHR, FileConfigChrName, 0, 2048);
+            if (FileConfigChrSizeType > 0)
+            {
+                int FontFileOffset = Page & FileConfigChrSizeType;
+                FontFileOffset = FontFileOffset * 2048;
+                FileLoadToMem(CobraCHR, FileConfigChrName, FontFileOffset, 2048);
+            }
+            else
+            {
+                FileLoadToMem(CobraCHR, FileConfigChrName, 0, 2048);
+            }
+            unsigned char Temp;
+            int TempPtr;
+            for (int YY = 0; YY < 24; YY++)
+            {
+                for (int XX = 0; XX < 32; XX++)
+                {
+                    TempPtr = YY * 32 + XX;
+                    Temp = screen_buf[TempPtr];
+                    screen_buf[TempPtr] = 0;
+                    screen_char(XX, YY, Temp);
+
+                    TempPtr = (YY + 31) * 32 + XX;
+                    Temp = screen_buf[TempPtr];
+                    screen_buf[TempPtr] = 0;
+                    screen_char(XX, YY + 31, Temp);
+                }
+            }
         }
     }
 }
 
 void FileLoadConfig()
 {
-    screen_raw_color = emu_Malloc(32 * 24 * 3);
+    screen_raw_color = emu_Malloc(32 * 24 * 2);
     CobraCHR = emu_Malloc(2048);
     for (int I = 0; I < 2048; I++)
     {
@@ -246,78 +266,6 @@ void FileLoadConfig()
                             screen_use_colors = 0;
                         }
                     }
-                    if (FileLoadConfigParam(c, c_ptr, Line2, "FileRom="))
-                    {
-                        TI += 2;
-
-                        int ParamLen = 8;
-                    
-                        screen_char(0, TI, 'R');
-                        screen_char(1, TI, 'O');
-                        screen_char(2, TI, 'M');
-
-                        for (int I = 0; I < FileDirLen; I++)
-                        {
-                            StrX[I] = FileDir[I];
-                        }
-                        for (int I = 0; I < (Line2 - ParamLen); I++)
-                        {
-                            StrX[I + FileDirLen] = c[c_ptr + ParamLen + I];
-                        }
-                        StrX[FileDirLen + Line2 - ParamLen] = 0;
-                        
-                        if (strlen(StrX) > (FileDirLen + 3))
-                        {
-                            int FileConfigRomHandle = emu_FileOpen(StrX, "r+b");
-                            if (FileConfigRomHandle)
-                            {
-                                FileConfigRomName = emu_Malloc(strlen(StrX) + 2);
-                                strcpy(FileConfigRomName, StrX);
-                                FileConfigRomSize = emu_FileSize(StrX);
-                                screen_text(10, TI, FileConfigRomName);
-                                emu_FileClose(FileConfigRomHandle);
-                            }
-                        }
-                        screen_num(4, TI, FileConfigRomSize);
-
-                        TI -= 2;
-                    }
-                    if (FileLoadConfigParam(c, c_ptr, Line2, "FileRam="))
-                    {
-                        TI += 3;
-                    
-                        int ParamLen = 8;
-                    
-                        screen_char(0, TI, 'R');
-                        screen_char(1, TI, 'A');
-                        screen_char(2, TI, 'M');
-                        
-                        for (int I = 0; I < FileDirLen; I++)
-                        {
-                            StrX[I] = FileDir[I];
-                        }
-                        for (int I = 0; I < (Line2 - ParamLen); I++)
-                        {
-                            StrX[I + FileDirLen] = c[c_ptr + ParamLen + I];
-                        }
-                        StrX[FileDirLen + Line2 - ParamLen] = 0;
-                        
-                        if (strlen(StrX) > (FileDirLen + 3))
-                        {
-                            int FileConfigRamHandle = emu_FileOpen(StrX, "r+b");
-                            if (FileConfigRamHandle)
-                            {
-                                FileConfigRamName = emu_Malloc(strlen(StrX) + 2);
-                                strcpy(FileConfigRamName, StrX);
-                                FileConfigRamSize = emu_FileSize(StrX);
-                                screen_text(10, TI, FileConfigRamName);
-                                emu_FileClose(FileConfigRamHandle);
-                            }
-                        }
-                        screen_num(4, TI, FileConfigRamSize);
-
-                        TI -= 3;
-                    }
                     if (FileLoadConfigParam(c, c_ptr, Line2, "FileChr="))
                     {
                         int ParamLen = 8;
@@ -344,7 +292,7 @@ void FileLoadConfig()
                                 FileConfigChrName = emu_Malloc(strlen(StrX) + 2);
                                 strcpy(FileConfigChrName, StrX);
                                 FileConfigChrSize = emu_FileSize(StrX);
-                                screen_text(10, TI, FileConfigChrName);
+                                screen_text(11, TI, FileConfigChrName);
                                 emu_FileClose(FileConfigChrHandle);
                                 
                                 if (FileConfigChrSize >=   2048) FileConfigChrSizeType = 0;
@@ -388,13 +336,85 @@ void FileLoadConfig()
                                 FileConfigLstName = emu_Malloc(strlen(StrX) + 2);
                                 strcpy(FileConfigLstName, StrX);
                                 FileConfigLstSize = emu_FileSize(StrX);
-                                screen_text(10, TI, FileConfigLstName);
+                                screen_text(11, TI, FileConfigLstName);
                                 emu_FileClose(FileConfigLstHandle);
                             }
                         }
                         screen_num(4, TI, FileConfigLstSize);
 
                         TI -= 1;
+                    }
+                    if (FileLoadConfigParam(c, c_ptr, Line2, "FileRom="))
+                    {
+                        TI += 2;
+
+                        int ParamLen = 8;
+                    
+                        screen_char(0, TI, 'R');
+                        screen_char(1, TI, 'O');
+                        screen_char(2, TI, 'M');
+
+                        for (int I = 0; I < FileDirLen; I++)
+                        {
+                            StrX[I] = FileDir[I];
+                        }
+                        for (int I = 0; I < (Line2 - ParamLen); I++)
+                        {
+                            StrX[I + FileDirLen] = c[c_ptr + ParamLen + I];
+                        }
+                        StrX[FileDirLen + Line2 - ParamLen] = 0;
+                        
+                        if (strlen(StrX) > (FileDirLen + 3))
+                        {
+                            int FileConfigRomHandle = emu_FileOpen(StrX, "r+b");
+                            if (FileConfigRomHandle)
+                            {
+                                FileConfigRomName = emu_Malloc(strlen(StrX) + 2);
+                                strcpy(FileConfigRomName, StrX);
+                                FileConfigRomSize = emu_FileSize(StrX);
+                                screen_text(11, TI, FileConfigRomName);
+                                emu_FileClose(FileConfigRomHandle);
+                            }
+                        }
+                        screen_num(4, TI, FileConfigRomSize);
+
+                        TI -= 2;
+                    }
+                    if (FileLoadConfigParam(c, c_ptr, Line2, "FileRam="))
+                    {
+                        TI += 3;
+                    
+                        int ParamLen = 8;
+                    
+                        screen_char(0, TI, 'R');
+                        screen_char(1, TI, 'A');
+                        screen_char(2, TI, 'M');
+                        
+                        for (int I = 0; I < FileDirLen; I++)
+                        {
+                            StrX[I] = FileDir[I];
+                        }
+                        for (int I = 0; I < (Line2 - ParamLen); I++)
+                        {
+                            StrX[I + FileDirLen] = c[c_ptr + ParamLen + I];
+                        }
+                        StrX[FileDirLen + Line2 - ParamLen] = 0;
+                        
+                        if (strlen(StrX) > (FileDirLen + 3))
+                        {
+                            int FileConfigRamHandle = emu_FileOpen(StrX, "r+b");
+                            if (FileConfigRamHandle)
+                            {
+                                FileConfigRamName = emu_Malloc(strlen(StrX) + 2);
+                                strcpy(FileConfigRamName, StrX);
+                                FileConfigRamSize = emu_FileSize(StrX);
+                                screen_text(11, TI, FileConfigRamName);
+                                emu_FileClose(FileConfigRamHandle);
+                            }
+                        }
+                        screen_num(4, TI, FileConfigRamSize);
+
+                        TI -= 3;
                     }
 
                     c_ptr += Line2;
@@ -446,9 +466,7 @@ void FileLoadConfig()
                                 StrX[I] = c2[c_ptr + I];
                             }
                             StrX[Line2] = 0;
-
                             MemoryRomTable[II] = FileLoadConfigValueHex(c2, c_ptr, Line2);
-
                             c_ptr += Line2;
                         }
                     }
@@ -457,22 +475,6 @@ void FileLoadConfig()
 
         }
     }
-
-
-
-
-  //emu_setKeymap(1); 
-  //
-  //if ( (endsWith(filename, ".80")) || (endsWith(filename, ".o")) || (endsWith(filename, ".O")))  {
-  //  zx80 = 1;
-  //  ramsize = 48;
-  //  //emu_setKeymap(0);    
-  //}
-  //else if (endsWith(filename, ".56") ) {
-  //  ramsize = 56;
-  //}
-
-
 }
 
 #endif

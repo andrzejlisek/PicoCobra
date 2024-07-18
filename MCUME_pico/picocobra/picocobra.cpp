@@ -62,15 +62,14 @@ int main(void) {
 //#endif    
     //tft.waitSync();
     emu_start();
-    emu_Init(filename);
     tft.startRefresh();
+    Cobra_Init();
     struct repeating_timer timer;
     add_repeating_timer_ms(15, repeating_timer_callback, NULL, &timer);    
-    SetConfigZ80_();
     while (true) {
         uint16_t bClick = emu_DebounceLocalKeys();
-        emu_Input(bClick);  
-        emu_Step();        
+        Cobra_Input(bClick);  
+        Cobra_Step();        
     }
 }
 static unsigned short palette16[PALETTE_SIZE];

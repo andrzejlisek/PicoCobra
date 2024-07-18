@@ -20,32 +20,9 @@ int interrupted=0;
 /* the keyboard state and other */
 static byte keyboard[ 8 ] = {0xff,0xff,0xff,0xff, 0xff,0xff,0xff,0xff};;
 static byte * XBuf=0; 
-int zx80=0;
 int autoload=1;
 
 unsigned char keyboard_new[8];
-
-#define PaletteC1 128
-#define PaletteC2 255
-
-struct { unsigned char R,G,B; } Palette[16] = {
-  {         0,         0,         0},
-  {         0,         0, PaletteC1},
-  { PaletteC1,         0,         0},
-  { PaletteC1,         0, PaletteC1},
-  {         0, PaletteC1,         0},
-  {         0, PaletteC1, PaletteC1},
-  { PaletteC1, PaletteC1,         0},
-  { PaletteC1, PaletteC1, PaletteC1},
-  {         0,         0,         0},
-  {         0,         0, PaletteC2},
-  { PaletteC2,         0,         0},
-  { PaletteC2,         0, PaletteC2},
-  {         0, PaletteC2,         0},
-  {         0, PaletteC2, PaletteC2},
-  { PaletteC2, PaletteC2,         0},
-  { PaletteC2, PaletteC2, PaletteC2}
-};
 
 static char tapename[64]={0};
 static const int kBuf[]={13,25,19,25,19,40}; //,21,40}; // LOAD "" (J shift p shift p, R ENTER) 
@@ -83,7 +60,7 @@ static unsigned char InKey4;
 static unsigned char InKey5;
 static unsigned char InKey6;
 
-void z81_Input(int bClick) {
+void Cobra_Input(int bClick) {
   InKey_ = emu_GetPad();
   InKey0 = emu_ReadI2CKeyboard2(0);
   InKey1 = emu_ReadI2CKeyboard2(1);
@@ -94,13 +71,14 @@ void z81_Input(int bClick) {
   InKey6 = emu_ReadI2CKeyboard2(6);
 }
 
-void bitbufBlit(unsigned char * buf)
+void bitbufBlit(unsigned char * buf, unsigned char * bufpal)
 {
   emu_DrawVsync();  
   memset( XBuf, 0, WIDTH*8 ); 
   buf = buf + (ZX_VID_MARGIN*(ZX_VID_FULLWIDTH/8)) + 1;
   int y,x,i;
   byte d;
+  int PalPtr = 0;
   for(y=0;y<192;y++)
   {
     byte * src = buf + 4;
@@ -112,14 +90,19 @@ void bitbufBlit(unsigned char * buf)
       {
         if ( d & 128 )
         {
-          *dst++=0;
+          *dst++ = (bufpal[PalPtr] & 15); // Fore
         }
         else
         {
-          *dst++=15;
+          *dst++ = (bufpal[PalPtr] >> 4); // Back
         }
         d <<= 1;
       }       
+      PalPtr++;
+    }
+    if ((y & 7) != 7)
+    {
+        PalPtr -= 32;
     }
     emu_DrawLinePal16(&XBuf[0], WIDTH, HEIGHT, y);   
     buf += (ZX_VID_FULLWIDTH/8);
@@ -140,54 +123,16 @@ static void updateKeyboard (void)
 }
 
 
-/* despite the name, this also works for the ZX80 :-) */
-void reset81()
+void emu_KeyboardOnDown(int keymodifer, int key)
 {
-  //interrupted=2;  /* will cause a reset */
-  //memset(mem+0x4000,0,0xc000);  
 }
 
-void load_p(int a)
+void emu_KeyboardOnUp(int keymodifer, int key)
 {
-  emu_printf("loading...");
-
-  emu_printf(tapename);
-  int size = emu_FileSize(tapename);
-  int f = emu_FileOpen(tapename, "r+b");  
-  if ( !f ) {
-    /* the partial snap will crash without a file, so reset */
-    if(autoload)
-      reset81(),autoload=0;
-    return;
-  }
-
-  autoload=0;
-  //emu_FileRead(mem + (zx80?0x4000:0x4009), size, f);
-  //emu_FileClose(f);
-
-  //if(zx80)
-  //  store(0x400b,fetch(0x400b)+1);         
-}
-
-void save_p(int a)
-{
-  
-}
-
-static void initmem()
-{
-
 }
 
 
-void emu_KeyboardOnDown(int keymodifer, int key) {
-}
-
-void emu_KeyboardOnUp(int keymodifer, int key) {
-}
-
-
-void z81_Init(void) 
+void Cobra_Init(void) 
 {
 
 #if HAS_SND
@@ -195,34 +140,39 @@ void z81_Init(void)
 #endif 
   
   if (XBuf == 0) XBuf = (byte *)emu_Malloc(WIDTH*8);
+
   /* Set up the palette */
-  int J;
-  for(J=0;J<16;J++)
-    emu_SetPaletteEntry(Palette[J].R,Palette[J].G,Palette[J].B, J);
+  unsigned char _1 = 128;
+  unsigned char _2 = 255;  
+  emu_SetPaletteEntry( 0,  0,  0,  0);
+  emu_SetPaletteEntry( 0,  0, _1,  1);
+  emu_SetPaletteEntry(_1,  0,  0,  2);
+  emu_SetPaletteEntry(_1,  0, _1,  3);
+  emu_SetPaletteEntry( 0, _1,  0,  4);
+  emu_SetPaletteEntry( 0, _1, _1,  5);
+  emu_SetPaletteEntry(_1, _1,  0,  6);
+  emu_SetPaletteEntry(_1, _1, _1,  7);
+  emu_SetPaletteEntry( 0,  0,  0,  8);
+  emu_SetPaletteEntry( 0,  0, _2,  9);
+  emu_SetPaletteEntry(_2,  0,  0, 10);
+  emu_SetPaletteEntry(_2,  0, _2, 11);
+  emu_SetPaletteEntry( 0, _2,  0, 12);
+  emu_SetPaletteEntry( 0, _2, _2, 13);
+  emu_SetPaletteEntry(_2, _2,  0, 14);
+  emu_SetPaletteEntry(_2, _2, _2, 15);
 
-
-  //????????memcpy(memchrset,CobraCHR,CobraCHR_size);
-  
   Reset8910(&ay,3500000,0);
   
   
-  //?????????memory_init();
-  
-  initmem();
- 
+
   /* reset the keyboard state */
   memset( keyboard, 255, sizeof( keyboard ) );  
 
+  SetConfigZ80();
   ResetZ80();
- }
-
-
-void SetConfigZ80_(void)
-{
-    SetConfigZ80();
 }
 
-void z81_Step(void)
+void Cobra_Step(void)
 {
   ExecZ80();
   sighandler(0);
@@ -257,17 +207,3 @@ static int endsWith(const char * s, const char * suffix)
   return (retval);  
 }
 
-void z81_Start(char * filename)
-{
-  char c;
-  strncpy(tapename,filename,64);
-  int f = emu_FileOpen(tapename, "r+b");
-  if ( f ) {
-    int fsize = emu_FileRead(&c, 1, f);
-    if ( fsize == 0) { 
-      autoload = 0;
-      emu_printf("no autoload");
-    }
-    emu_FileClose(f);
-  }
-}

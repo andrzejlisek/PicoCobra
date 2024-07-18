@@ -8,13 +8,13 @@
 
 
 unsigned char memory_common = 1;
-
-
 unsigned char memory_offset = 1;
-
 unsigned char memory_raw[65536];
 
 int memory_rom_size = 0;
+
+int memory_font_ram_addr = 0xF000;
+unsigned char memory_font_ram = 0;
 
 ///#define fetch(x) (memory_raw[x])
 
@@ -42,6 +42,14 @@ void store(unsigned short ad, unsigned char b)
         return;
     }
     memory_raw[ad] = b;
+    if (screen_use_colors && (ad >= 0xFC00) && (ad < (0xFC00 + 768)))
+    {
+        int ScrY = ad;
+        int ScrX = ad;
+        ScrX = (ScrX - 0xFC00) % 32;
+        ScrY = (ScrY - 0xFC00) / 32;
+        screen_color(ScrX, ScrY, b);
+    }
     if ((ad >= 0xF800) && (ad < (0xF800 + 768)))
     {
         int ScrY = ad;
@@ -49,6 +57,13 @@ void store(unsigned short ad, unsigned char b)
         ScrX = (ScrX - 0xF800) % 32;
         ScrY = (ScrY - 0xF800) / 32;
         screen_char(ScrX, ScrY, b);
+    }
+    if (memory_font_ram)
+    {
+        if ((ad >= memory_font_ram_addr) && (ad < (memory_font_ram_addr + 2048)))
+        {
+            CobraCHR[ad - memory_font_ram_addr] = b;
+        }
     }
 }
 

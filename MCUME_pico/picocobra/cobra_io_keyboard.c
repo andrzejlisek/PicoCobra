@@ -232,7 +232,7 @@ int keyboard_scan()
             }
         }
         
-        if (Chr)
+        if (Chr && (!screen_second))
         {
             switch (Chr)
             {

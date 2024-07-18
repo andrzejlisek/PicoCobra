@@ -14,10 +14,6 @@
 #define TITLE "    COBRA Emulator"
 #define ROMSDIR "cobra"
 
-#define emu_Init(ROM) {z81_Start(ROM); z81_Init(); }
-#define emu_Step(x) {z81_Step();}
-#define emu_Input(x) {z81_Input(x);}
-
 #ifdef KEYMAP_PRESENT
    
 #ifdef PICOZX

@@ -126,10 +126,14 @@ int framewait=0;
 
 void SetConfigZ80(void)
 {
+    keyboard_init();
+    memory_init();
     FileLoadConfig();
     FileLoadToMem(memory_raw, FileConfigRamName, 0, FileConfigRamSize);
     MemorySetFont(0);
     MemorySetRom(0);
+    screen_clear();
+    screen_debug_reset();
 }
 
 
@@ -260,7 +264,7 @@ void ExecZ80(void)
         
         screen_debug_info(pc);
         keyboard_system_update();
-        bitbufBlit(screen_raw + screen_blit_offfset);
+        bitbufBlit(screen_raw + screen_blit_offfset, screen_raw_color + screen_blit_offfset_color);
         postcopy:
         memset(scrnbmp_new,0,sizeof(scrnbmp_new));
         lastvsyncpend=tstates;
@@ -372,11 +376,6 @@ void ExecZ80(void)
 
 void ResetZ80(void)
 {
-  keyboard_init();
-  memory_init();
-  screen_clear();
-  screen_debug_reset();
-
   a=f=b=c=d=e=h=l=a1=f1=b1=c1=d1=e1=h1=l1=i=iff1=iff2=im=r=0;
   ixoriy=new_ixoriy=0;
   ix=iy=sp=pc=0;

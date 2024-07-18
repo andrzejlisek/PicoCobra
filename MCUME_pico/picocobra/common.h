@@ -31,16 +31,11 @@ extern int ramsize;
 extern int interrupted;
 extern int nmigen,hsyncgen,vsync;
 extern int autoload;
-extern int zx80;
 
 extern void sighandler(int a);
 extern unsigned int in(int AddrH, int AddrL);
 extern unsigned int out(int AddrH, int AddrL, int Reg);
 extern void do_interrupt();
-extern void save_p(int a);
-extern void load_p(int a);
-extern void do_interrupt();
-extern void reset81();
 extern void frame_pause(void);
-extern void bitbufBlit(unsigned char * buf);
+extern void bitbufBlit(unsigned char * buf, unsigned char * bufpal);
 
