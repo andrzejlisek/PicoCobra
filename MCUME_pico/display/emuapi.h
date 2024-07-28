@@ -58,6 +58,8 @@ extern int emu_IsVga(void);
 //extern void emu_DrawLine(unsigned char * VBuf, int width, int height, int line);
 //extern void * emu_LineBuffer(int line);
 
+extern char emu_keymatrix_get(int Idx);
+
 extern void emu_InitJoysticks(void);
 extern int emu_SwapJoysticks(int statusOnly);
 extern unsigned short emu_DebounceLocalKeys(void);

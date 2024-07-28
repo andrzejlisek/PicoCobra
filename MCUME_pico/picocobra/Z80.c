@@ -132,6 +132,20 @@ void SetConfigZ80(void)
     FileLoadToMem(memory_raw, FileConfigRamName, 0, FileConfigRamSize);
     MemorySetFont(0);
     MemorySetRom(0);
+
+    if (emu_keymatrix_get(0)) screen_second_init = 1;
+    if (emu_keymatrix_get(1)) screen_second_init = 1;
+    if (emu_keymatrix_get(2)) screen_second_init = 1;
+    if (emu_keymatrix_get(3)) screen_second_init = 1;
+    if (emu_keymatrix_get(4)) screen_second_init = 1;
+    if (emu_keymatrix_get(5)) screen_second_init = 1;
+    if (emu_keymatrix_get(6)) screen_second_init = 1;
+    if (emu_keymatrix_get(7)) screen_second_init = 1;
+    if (screen_second_init)
+    {
+        screen_second = 1;
+    }
+
     screen_clear();
     screen_debug_reset();
 }

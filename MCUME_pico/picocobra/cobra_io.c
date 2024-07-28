@@ -166,6 +166,17 @@ void screen_debug_info(int pc)
 {
     if (screen_second)
     {
+        for (int I = 0; I < 8; I++)
+        {
+            screen_num( I * 3, 51, emu_keymatrix_get(20 + I));
+            screen_num( I * 3, 52, emu_keymatrix_get(10 + I));
+            screen_hex2( I * 3, 53, emu_keymatrix_get(I));
+        }
+        screen_text(27, 51, "cols");
+        screen_text(27, 52, "rows");
+        screen_text(27, 53, "data");
+
+
         screen_hex2( 0, 54, keyboard_new[0]);
         screen_hex2( 2, 54, keyboard_new[1]);
         screen_hex2( 4, 54, keyboard_new[2]);

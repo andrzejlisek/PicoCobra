@@ -146,6 +146,10 @@ void MemorySetRom(int Page)
 
 void MemorySetFont(int Page)
 {
+    if (screen_second_init)
+    {
+        return;
+    }
     if (Page >= 128)
     {
         memory_font_ram = 1;

@@ -80,6 +80,26 @@ static bool menuOn=true;
 static bool autorun=false;
 
 
+
+
+static unsigned char emu_keymatrix_data[8];
+static unsigned char emu_keymatrix_rows[8];
+static unsigned char emu_keymatrix_cols[8];
+
+char emu_keymatrix_get(int Idx)
+{
+    switch (Idx / 10)
+    {
+        case 0:
+            return emu_keymatrix_data[Idx % 10];
+        case 1:
+            return emu_keymatrix_rows[Idx % 10];
+        case 2:
+            return emu_keymatrix_cols[Idx % 10];
+    }
+    return 0;
+}
+
 /********************************
  * Generic output and malloc
 ********************************/ 
@@ -492,9 +512,43 @@ int emu_ReadKeys(void)
 #endif
 
 
+
+emu_keymatrix_data[0] = 0;
+emu_keymatrix_data[1] = 0;
+emu_keymatrix_data[2] = 0;
+emu_keymatrix_data[3] = 0;
+emu_keymatrix_data[4] = 0;
+emu_keymatrix_data[5] = 0;
+emu_keymatrix_data[6] = 0;
+emu_keymatrix_data[7] = 0;
+emu_keymatrix_rows[1] = KROWIN1;
+emu_keymatrix_rows[2] = KROWIN2;
+emu_keymatrix_rows[3] = KROWIN3;
+emu_keymatrix_rows[4] = KROWIN4;
+emu_keymatrix_rows[5] = KROWIN5;
+emu_keymatrix_rows[6] = KROWIN6;
+//emu_keymatrix_rows[7] = KROWIN7;
+emu_keymatrix_cols[1] = KCOLOUT1;
+emu_keymatrix_cols[2] = KCOLOUT2;
+emu_keymatrix_cols[3] = KCOLOUT3;
+emu_keymatrix_cols[4] = KCOLOUT4;
+emu_keymatrix_cols[5] = KCOLOUT5;
+emu_keymatrix_cols[6] = KCOLOUT6;
+//emu_keymatrix_cols[7] = KCOLOUT7;
+
+
+
 #if (defined(PICOMPUTER) || defined(PICOZX) )
   keymatrix_hitrow = -1;
   unsigned char row;
+  unsigned char row_;
+  bool io_val1 = true;
+  bool io_val2 = true;
+  bool io_val3 = true;
+  bool io_val4 = true;
+  bool io_val5 = true;
+  bool io_val6 = true;
+  bool io_val7 = true;
 #ifdef PICOZX  
   unsigned short cols[7]={KCOLOUT1,KCOLOUT2,KCOLOUT3,KCOLOUT4,KCOLOUT5,KCOLOUT6,KCOLOUT7};
   unsigned char keymatrixtmp[7];
@@ -512,7 +566,17 @@ int emu_ReadKeys(void)
 #endif
     row=0; 
 #ifdef PICOZX  
-    row |= (gpio_get(KROWIN1) ? 0 : 0x04);
+    io_val1 = gpio_get(KROWIN1);
+    io_val1 = gpio_get(KROWIN1);
+    io_val1 = gpio_get(KROWIN1);
+    io_val1 = gpio_get(KROWIN1);
+    io_val2 = gpio_get(KROWIN2);
+    io_val3 = gpio_get(KROWIN3);
+    io_val4 = gpio_get(KROWIN4);
+    io_val5 = gpio_get(KROWIN5);
+    io_val6 = gpio_get(KROWIN6);
+    io_val7 = gpio_get(KROWIN7);
+    /*row |= (gpio_get(KROWIN1) ? 0 : 0x04);
     row |= (gpio_get(KROWIN1) ? 0 : 0x04);
     row |= (gpio_get(KROWIN1) ? 0 : 0x04);
     row |= (gpio_get(KROWIN1) ? 0 : 0x04);
@@ -521,9 +585,28 @@ int emu_ReadKeys(void)
     row |= (gpio_get(KROWIN4) ? 0 : 0x02);
     row |= (gpio_get(KROWIN5) ? 0 : 0x10);
     row |= (gpio_get(KROWIN6) ? 0 : 0x20);
-    row |= (gpio_get(KROWIN7) ? 0 : 0x40);
+    row |= (gpio_get(KROWIN7) ? 0 : 0x40);*/
+    row |= (io_val1 ? 0 : 0x04);
+    row |= (io_val1 ? 0 : 0x04);
+    row |= (io_val1 ? 0 : 0x04);
+    row |= (io_val1 ? 0 : 0x04);
+    row |= (io_val2 ? 0 : 0x01);
+    row |= (io_val3 ? 0 : 0x08);
+    row |= (io_val4 ? 0 : 0x02);
+    row |= (io_val5 ? 0 : 0x10);
+    row |= (io_val6 ? 0 : 0x20);
+    row |= (io_val7 ? 0 : 0x40);
 #else
-    row |= (gpio_get(KROWIN2) ? 0 : 0x01);
+    io_val2 = gpio_get(KROWIN2);
+    io_val2 = gpio_get(KROWIN2);
+    io_val2 = gpio_get(KROWIN2);
+    io_val2 = gpio_get(KROWIN2);
+    io_val4 = gpio_get(KROWIN4);
+    io_val1 = gpio_get(KROWIN1);
+    io_val3 = gpio_get(KROWIN3);
+    io_val5 = gpio_get(KROWIN5);
+    io_val6 = gpio_get(KROWIN6);
+    /*row |= (gpio_get(KROWIN2) ? 0 : 0x01);
     row |= (gpio_get(KROWIN2) ? 0 : 0x01);
     row |= (gpio_get(KROWIN2) ? 0 : 0x01);
     row |= (gpio_get(KROWIN2) ? 0 : 0x01);
@@ -531,8 +614,28 @@ int emu_ReadKeys(void)
     row |= (gpio_get(KROWIN1) ? 0 : 0x04);
     row |= (gpio_get(KROWIN3) ? 0 : 0x08);
     row |= (gpio_get(KROWIN5) ? 0 : 0x10);
-    row |= (gpio_get(KROWIN6) ? 0 : 0x20);
+    row |= (gpio_get(KROWIN6) ? 0 : 0x20);*/
+    row |= (io_val2 ? 0 : 0x01);
+    row |= (io_val2 ? 0 : 0x01);
+    row |= (io_val2 ? 0 : 0x01);
+    row |= (io_val2 ? 0 : 0x01);
+    row |= (io_val4 ? 0 : 0x02);
+    row |= (io_val1 ? 0 : 0x04);
+    row |= (io_val3 ? 0 : 0x08);
+    row |= (io_val5 ? 0 : 0x10);
+    row |= (io_val6 ? 0 : 0x20);
 #endif    
+
+    row_ = 0;
+    row_ |= (io_val1 ? 0 : 0x01);
+    row_ |= (io_val2 ? 0 : 0x02);
+    row_ |= (io_val3 ? 0 : 0x04);
+    row_ |= (io_val4 ? 0 : 0x08);
+    row_ |= (io_val5 ? 0 : 0x10);
+    row_ |= (io_val6 ? 0 : 0x20);
+    row_ |= (io_val7 ? 0 : 0x40);
+    emu_keymatrix_data[i] = row_;
+
     //gpio_set_dir(cols[i], GPIO_OUT);
     gpio_put(cols[i], 1);
     gpio_set_dir(cols[i], GPIO_IN);

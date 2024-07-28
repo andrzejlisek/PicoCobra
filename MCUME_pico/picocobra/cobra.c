@@ -134,7 +134,6 @@ void emu_KeyboardOnUp(int keymodifer, int key)
 
 void Cobra_Init(void) 
 {
-
 #if HAS_SND
   emu_sndInit(); 
 #endif 

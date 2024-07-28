@@ -3,6 +3,8 @@
 #include "cobrarom.h"
 #undef rom_scrn
 
+char screen_second_init = 0;
+
 char screen_second = 0;
 
 unsigned char screen_charmap = 0;

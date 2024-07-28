@@ -1,6 +1,6 @@
-set(CMAKE_HOST_SYSTEM "Linux-5.4.0-189-generic")
+set(CMAKE_HOST_SYSTEM "Linux-5.4.0-190-generic")
 set(CMAKE_HOST_SYSTEM_NAME "Linux")
-set(CMAKE_HOST_SYSTEM_VERSION "5.4.0-189-generic")
+set(CMAKE_HOST_SYSTEM_VERSION "5.4.0-190-generic")
 set(CMAKE_HOST_SYSTEM_PROCESSOR "x86_64")
 
 include("/media/xxx/WORK1/__ToBackup/Develop/Cobra/RaspberryPi/pico-sdk/cmake/preload/toolchains/pico_arm_gcc.cmake")
